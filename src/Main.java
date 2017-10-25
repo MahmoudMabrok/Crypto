@@ -1,36 +1,28 @@
 /**
- * this is
+ * v1.0
+ * Crypto
+ * Encryption
+ * 1- normalize (remove spaces and special char , UpperCase )
+ * 2-Obify add ob before vowel char
+ * 3- caeserfiy --shift char based on n
+ *
+ * Decryption
+ * 1-decaeserify :: remove shifts
+ * 2-deObify  :: remove OB
+ *
+ *
  * Created by mo3tamed on 8/27/17.
+ * last mod 10/25/2017
  */
 public class Main {
 
 
-    public static void main(String[] args) {
-
-     String s = "This is some\"really\"great. (Text)!?)" ;
-       String re =  normalize(s) ;
-      /*  System.out.println(s);
-
-
-        System.out.println(caeserify("B" ,-1 ));
-*/
-
-        System.out.println(obify("ASDDSYHUILKO"));
-
-    }
-
     public static String normalize(String  val )
     {
         val = val.toUpperCase() ;
-        System.out.println(val);
         val = val.replaceAll( " ", "") ;
-        //val=val.trim() ;
-        System.out.println(val);
+        //val=val.trim() ;  ???
         val = val.replaceAll("[.,:;\"!?()]" , "") ;
-        System.out.println(val);
-
-
-
 
         return val;
 
@@ -57,12 +49,15 @@ public class Main {
 
     }
 
-    public static String caeserify (String val  , int n )
+    public static String caeserify (String val  , int n  )
     {
-         char[] value =val.toCharArray() ;
+
+        val = normalize(val) ;
+        val = obify(val ) ;
+        char[] value =val.toCharArray() ;
         for (int i = 0; i < val.length(); i++) {
-            if ( (value[i] + n ) >= 'A')
-            value[i] =(char) ( 'A' +   (((int)value[i]+n) -(int)'A' )%26  ) ; //
+            if ( (value[i] + n ) >= 'A')  //n + or -
+            value[i] =(char) ( 'A' +   (((int)value[i]+n) -(int)'A' )%26  ) ; //i want to get offset from a by (get difference between (new $ a)  modular by  26 )
             else
             {
                 value[i] = (char) (  'Z' +  (1+ (value[i]-'A' ) + n )  ) ;
@@ -70,6 +65,37 @@ public class Main {
         }
         String s = new String(value);
         return  s ;
+
+
+    }
+    public static String deObify (String val )
+    {
+            int index = 0 ;
+            StringBuilder sb = new StringBuilder(val) ;
+            while (sb.indexOf("OB")>= 0 )
+            {
+                index = sb.indexOf("OB") ;
+                sb.delete(index ,index +2) ;//index ,index+1 only index+2 excluded
+            }
+            return  sb.toString() ; 
+
+    }
+    public static String decaeserify(String val  , int n )
+    {
+        n*=-1;  //to remove shift just back track !!!
+        char[] value =val.toCharArray() ;
+        for (int i = 0; i < val.length(); i++) {
+            if ( (value[i] + n ) >= 'A')
+                value[i] =(char) ( 'A' +   (((int)value[i]+n) -(int)'A' )%26  ) ; //
+            else
+            {
+                value[i] = (char) (  'Z' +  (1+ (value[i]-'A' ) + n )  ) ;
+            }
+        }
+        String s = new String(value);
+        s=deObify(s) ;
+
+        return  s.toLowerCase() ;
 
 
     }
